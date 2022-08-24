@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Timesheet Conversion</title>
+
+    <style>
+        .top-buffer { margin-top: 80px;}
+        .background { background-color: #F6F8FA;}
+    </style>
+  </head>
+  <body class="background">
+    <div class="container top-buffer">
+        <div class="row">
+          <div class="col">
+
+            <h3 style="color: #73c31d" class="pb-4 text-center" id="calculated">0 hours 0 minutes</h3>
+
+            <form>
+                <div class="form-group row">
+                    <label for="colFormLabel" class="col-4 col-form-label text-right">Monday</label>
+                    <div class="col-8 col-md-4">
+                      <input type="text" class="form-control" id="mondayEntry" placeholder="Time entry" onblur="calculate()">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="colFormLabel" class="col-4 col-form-label text-right">Tuesday</label>
+                    <div class="col-8 col-md-4">
+                      <input type="text" class="form-control" id="tuesdayEntry" placeholder="Time entry" onblur="calculate()">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="colFormLabel" class="col-4 col-form-label text-right">Wednesday</label>
+                    <div class="col-8 col-md-4">
+                      <input type="text" class="form-control" id="wednesdayEntry" placeholder="Time entry" onblur="calculate()">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="colFormLabel" class="col-4 col-form-label text-right">Thursday</label>
+                    <div class="col-8 col-md-4">
+                      <input type="text" class="form-control" id="thursdayEntry" placeholder="Time entry" onblur="calculate()">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="colFormLabel" class="col-4 col-form-label text-right">Friday</label>
+                    <div class="col-8 col-md-4">
+                      <input type="text" class="form-control" id="fridayEntry" placeholder="Time entry" onblur="calculate()">
+                    </div>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      <script>
+        function calculate() {
+
+            var monday = document.getElementById('mondayEntry').value
+            if(!validEntry(monday))
+            {
+                document.getElementById('mondayEntry').value = ""
+                monday = 0
+            }
+
+
+            var tuesday = document.getElementById('tuesdayEntry').value
+            if(!validEntry(tuesday))
+            {
+                document.getElementById('tuesdayEntry').value = ""
+                tuesday = 0
+            }
+
+
+            var wednesday = document.getElementById('wednesdayEntry').value
+            if(!validEntry(wednesday))
+            {
+                document.getElementById('wednesdayEntry').value = ""
+                wednesday = 0
+            }
+            
+            
+            var thursday = document.getElementById('thursdayEntry').value
+            if(!validEntry(thursday))
+            {
+                document.getElementById('thursdayEntry').value = ""
+                thursday = 0
+            }
+
+
+            var friday = document.getElementById('fridayEntry').value
+            if(!validEntry(friday))
+            {
+                document.getElementById('fridayEntry').value = ""
+                friday = 0
+            }
+            
+          
+
+            var totalFloatValue = parse(monday) + parse(tuesday) + parse(wednesday) + parse(thursday) + parse(friday)
+            var convertedDate = new Date(0,0)
+            convertedDate.setSeconds(totalFloatValue *60*60)
+            
+            document.getElementById('calculated').textContent = `${(convertedDate.getDay() - 1)*24 + convertedDate.getHours()} hours ${approxMinutes(convertedDate)} minutes`
+        }
+
+        function validEntry(entry) {
+         
+          var regex = new RegExp(/^\d+(\.\d+)?$/, 'i')
+
+          if(regex.test(entry))
+          {
+            return (!isNaN(entry) && entry.toString().indexOf('.') != -1) | (!isNaN(entry) && entry % 1 === 0)
+          }
+          else
+          {
+            return false
+          }
+
+          
+  
+          }
+
+        function parse(entry) {
+          if(entry == '')
+          {
+            return 0
+          }
+
+          if(entry % 1 === 0)
+          {
+            return parseInt(entry)
+          }
+          else if(!isNaN(entry) && entry.toString().indexOf('.') != -1)
+          {
+            return parseFloat(entry)
+          }
+          else
+          {
+            return 0;
+          }
+        }
+
+        function approxMinutes(dateValue) {
+          
+          if(dateValue.getSeconds() >= 30)
+          {
+            return dateValue.getMinutes() + 1
+          }
+          else
+          {
+            return dateValue.getMinutes()
+          }
+        }
+        </script>
+
+
+  </body>
+</html>
