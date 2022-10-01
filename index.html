@@ -53,6 +53,18 @@
                       <input type="text" class="form-control" id="fridayEntry" placeholder="Time entry" onblur="calculate()">
                     </div>
                 </div>
+                <div class="form-group row">
+                  <label for="colFormLabel" class="col-4 col-form-label text-right">Saturday</label>
+                  <div class="col-8 col-md-4">
+                    <input type="text" class="form-control" id="saturdayEntry" placeholder="Time entry" onblur="calculate()">
+                  </div>
+              </div>
+              <div class="form-group row">
+                <label for="colFormLabel" class="col-4 col-form-label text-right">Sunday</label>
+                <div class="col-8 col-md-4">
+                  <input type="text" class="form-control" id="sundayEntry" placeholder="Time entry" onblur="calculate()">
+                </div>
+            </div>
             </form>
           </div>
         </div>
@@ -69,14 +81,12 @@
                 monday = 0
             }
 
-
             var tuesday = document.getElementById('tuesdayEntry').value
             if(!validEntry(tuesday))
             {
                 document.getElementById('tuesdayEntry').value = ""
                 tuesday = 0
             }
-
 
             var wednesday = document.getElementById('wednesdayEntry').value
             if(!validEntry(wednesday))
@@ -85,7 +95,6 @@
                 wednesday = 0
             }
             
-            
             var thursday = document.getElementById('thursdayEntry').value
             if(!validEntry(thursday))
             {
@@ -93,21 +102,32 @@
                 thursday = 0
             }
 
-
             var friday = document.getElementById('fridayEntry').value
             if(!validEntry(friday))
             {
                 document.getElementById('fridayEntry').value = ""
                 friday = 0
             }
-            
-          
 
-            var totalFloatValue = parse(monday) + parse(tuesday) + parse(wednesday) + parse(thursday) + parse(friday)
-            var convertedDate = new Date(0,0)
-            convertedDate.setSeconds(totalFloatValue *60*60)
+            var saturday = document.getElementById('saturdayEntry').value
+            if(!validEntry(saturday))
+            {
+                document.getElementById('saturdayEntry').value = ""
+                saturday = 0
+            }
             
-            document.getElementById('calculated').textContent = `${(convertedDate.getDay() - 1)*24 + convertedDate.getHours()} hours ${approxMinutes(convertedDate)} minutes`
+            var sunday = document.getElementById('sundayEntry').value
+            if(!validEntry(sunday))
+            {
+                document.getElementById('sundayEntry').value = ""
+                sunday = 0
+            }
+
+            var totalFloatValue = parse(monday) + parse(tuesday) + parse(wednesday) + parse(thursday) + parse(friday) + parse(saturday) + parse(sunday)
+            var convertedDate = new Date(0,0)
+            convertedDate.setUTCSeconds(totalFloatValue*60*60)
+            console.log(Math.abs(convertedDate - new Date(0,0)))
+            document.getElementById('calculated').textContent = `${Math.floor((Math.abs(convertedDate - new Date(0,0)) / 36e5))} hours ${approxMinutes(convertedDate)} minutes`
         }
 
         function validEntry(entry) {
@@ -121,10 +141,7 @@
           else
           {
             return false
-          }
-
-          
-  
+          }  
           }
 
         function parse(entry) {
@@ -148,9 +165,9 @@
         }
 
         function approxMinutes(dateValue) {
-          
-          if(dateValue.getSeconds() >= 30)
+          if(dateValue.getSeconds() >= 30 && dateValue.getMinutes() < 59)
           {
+           
             return dateValue.getMinutes() + 1
           }
           else
